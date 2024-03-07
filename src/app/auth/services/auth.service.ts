@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, map, of, tap, throwError } from 'rxjs';
 
 import { environment } from '../../../environments/environments';
-import { AuthStatus, CheckTokenResponse, LoginResponse, User } from '../interfaces';
+import { AuthStatus, CheckTokenResponse, LoginResponse, RegisterResponse, RegisterUser, User } from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +39,18 @@ export class AuthService {
       .pipe(
         map( ({ user, token }) => this.setAuthentication( user, token ) ),
         catchError( err => throwError( () => err.error.message ) ),
+      )
+  }
+
+  register(user: RegisterUser ): Observable<boolean> {
+
+    const url = `${ this.baseUrl }/auth/register`
+    const body = user
+
+    return this.http.post<RegisterResponse>(url, body)
+      .pipe(
+        map( ({ user, token }) => this.setAuthentication( user, token ) ),
+        catchError( err => throwError( () => err.error.message ) )
       )
   }
 
